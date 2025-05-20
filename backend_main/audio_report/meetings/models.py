@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import Employee
+from employees.models import Employee
 
 
 class Meeting(models.Model):

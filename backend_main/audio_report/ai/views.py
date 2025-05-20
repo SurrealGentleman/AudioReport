@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ai.neuro_client import NeuroServerClient
-from users.models import Employee
+from employees.models import Employee
 from meetings.serializers import MeetingSerializer
 from audio_report.settings import env
 

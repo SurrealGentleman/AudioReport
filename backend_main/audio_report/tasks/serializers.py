@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Task
-from users.serializers import EmployeeShortSerializer
+from employees.serializers import EmployeeShortSerializer
 from departments.serializers import DepartmentSerializer
 from posts.serializers import PostSerializer
 

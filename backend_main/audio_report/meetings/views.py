@@ -8,7 +8,7 @@ from .render_docx import render_docx_template
 from .serializers import ReportSerializer, ReportInputSerializer
 from rest_framework.response import Response
 from audio_report.settings import BASE_DIR, MEDIA_ROOT
-from users.models import Employee
+from employees.models import Employee
 from tasks.models import Task
 
 

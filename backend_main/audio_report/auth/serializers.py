@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from users.serializers import EmployeeShortSerializer
-from users.models import Employee
+from employees.serializers import EmployeeShortSerializer
+from employees.models import Employee
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
