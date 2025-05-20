@@ -202,7 +202,7 @@ DATABASES = {
 }
 
 
-AUTH_USER_MODEL = 'employee.Employee'
+AUTH_USER_MODEL = 'employees.Employee'
 
 
 AUTHENTICATION_BACKENDS = [
