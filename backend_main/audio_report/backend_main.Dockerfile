@@ -9,7 +9,7 @@ COPY requirements_backend_main.txt .
 
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements_backend_main.txt
 
 # Копируем файлы проекта (исключая файлы, указанные в .dockerignore)
 COPY . .
