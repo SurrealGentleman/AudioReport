@@ -26,7 +26,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
-    @staticmethod
     def get_full_name(self, obj):
         return f"{obj.last_name} {obj.first_name} {obj.patronymic or ''}".strip()
 
@@ -56,7 +55,6 @@ class EmployeeShortSerializer(serializers.ModelSerializer):
         model = Employee
         fields = ['id', 'full_name', 'first_name', 'last_name', 'patronymic', 'department', 'post', 'email']
 
-    @staticmethod
     def get_full_name(self, obj):
         return f"{obj.last_name} {obj.first_name} {obj.patronymic or ''}".strip()
 
