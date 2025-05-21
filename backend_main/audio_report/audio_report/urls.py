@@ -4,7 +4,7 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from audio_report import settings
-from employees.views import LogoutView
+# from employees.views import LogoutView
 from auth.views import CustomTokenObtainPairView
 
 urlpatterns = [
@@ -13,7 +13,7 @@ urlpatterns = [
     # path('api/logout/', LogoutView.as_view(), name='logout'),
 
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
+    path('api/employees/', include('employees.urls')),
     path('api/posts/', include('posts.urls')),
     path('api/departments/', include('departments.urls')),
     path('api/tasks/', include('tasks.urls')),
