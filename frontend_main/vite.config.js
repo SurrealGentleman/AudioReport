@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,       // ← ключевой момент: позволяет заходить извне (через Docker)
-    port: 5173        // ← должен совпадать с портом в docker-compose
+    host: '0.0.0.0',       // ← ключевой момент: позволяет заходить извне (через Docker)
+    port: 5173,        // ← должен совпадать с портом в docker-compose
+    strictPort: true
   }
 });
