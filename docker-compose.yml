@@ -1,0 +1,89 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db_audio_report
+    restart: always
+    env_file:
+      - backend_main/audio_report/.env
+    volumes:
+      - ../pg_data_audio_report:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend_main:
+    build:
+      context: ./backend_main/audio_report
+      dockerfile: backend_main.Dockerfile
+    container_name: django_backend_main_audio_report
+    restart: always
+    env_file:
+      - backend_main/audio_report/.env
+    volumes:
+      - ./backend_main/audio_report:/app
+      - ./backend_main/audio_report/static:/app/static # Статика ДО `collectstatic`
+      - static_volume:/app/staticfiles # Статика ПОСЛЕ `collectstatic`
+      - media_volume:/app/media # Медиафайлы (переживут пересборку контейнера)
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: [ "gunicorn", "--timeout", "3600", "--bind", "0.0.0.0:8000", "audio_report.wsgi:application" ]
+
+  frontend_main:
+    build:
+      context: ./frontend_main
+      dockerfile: frontend_main.Dockerfile
+    container_name: react_frontend_main_audio_report
+    ports:
+      - "5173:5173" # Если нужно другое отображение портов
+    volumes:
+      - ./frontend_main:/app # Для разработки, чтобы изменения сразу применялись
+      - node_modules_volume:/app/node_modules # Исключаем перезапись node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    # command: npm run dev  # Для разработки (если нужно)
+    # Для production используйте собранную версию из nginx
+    command: npm run dev
+#    command: nginx -g 'daemon off;'
+
+  backend_ai:
+    build:
+      context: ./backend_ai/app
+      dockerfile: backend_ai.Dockerfile
+    container_name: fastapi_backend_ai_audio_report
+    restart: unless-stopped
+    env_file:
+      - backend_ai/app/.env
+    volumes:
+      - ./backend_ai/app:/app
+      - ./backend_ai/app/temp:/app/temp
+    ports:
+      - "8800:8800"
+    command: uvicorn main:app --host 0.0.0.0 --port 8800 --reload
+
+  ollama:
+    build:
+      context: ./backend_ai/
+      dockerfile: ollama.Dockerfile
+    container_name: ollama_ai_audio_report
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+#    restart: "no"
+    command: ollama serve
+#    entrypoint: [ "tail", "-f", "/dev/null" ]
+#    command: [ ]
+
+networks:
+    some_network:
+        name: 'our_network'
+
+volumes:
+  pg_data_audio_report:
+  static_volume:
+  media_volume:
+  node_modules_volume:
+  ollama_data:
