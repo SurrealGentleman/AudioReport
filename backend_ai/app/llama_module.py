@@ -36,7 +36,7 @@ class Llama:
             "top_p": 0.9,
             "top_k": 40,
             "repeat_penalty": 1.2,
-            "num_predict": 900,
+            "num_predict": 1200,
             "stream": False
         }
         response = requests.post(self.url, json=payload)
