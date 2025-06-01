@@ -185,6 +185,13 @@ WSGI_APPLICATION = 'audio_report.wsgi.application'
 # CELERY_TASK_SERIALIZER = "json"
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # или другой SMTP-сервер
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'alekseevalekseykla203040@gmail.com'
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
 # Database
 DATABASES = {
     # 'default': {
