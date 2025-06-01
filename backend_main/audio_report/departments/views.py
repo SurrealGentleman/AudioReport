@@ -21,6 +21,17 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Возвращаем обновлённый список всех пользователей
+        all_departments = self.get_queryset()
+        all_serializer = self.get_serializer(all_departments, many=True)
+        return Response(all_serializer.data, status=status.HTTP_200_OK)
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
