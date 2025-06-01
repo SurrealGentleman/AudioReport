@@ -81,6 +81,7 @@ const EmployeeModule = () => {
     };
 
     try {
+      console.log(dataJson);
       const data = await postEmployee(dataJson);
       setAllEmployee(data);
       setSelectDepartment(undefined);
@@ -120,7 +121,6 @@ const EmployeeModule = () => {
               dropOpen={openPost}
               setDropOpen={setOpenPost}
               objects={allPost}
-              // placeholder="Выберите должность"
               onChangeSelect={setSelectPost}
               clearable
               searchable

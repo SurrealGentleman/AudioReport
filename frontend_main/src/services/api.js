@@ -4,26 +4,23 @@ import { logout } from "./authService";
 
 const API_URL = "http://127.0.0.1:8000/api";
 
-// Настраиваем axios
+// Настройка axios
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Разрешаем отправку cookies
+  withCredentials: true,
 });
 
 // Функция обновления access-токена
 const refreshAccessToken = async () => {
   const refreshToken = Cookies.get("refresh_token");
-
   if (!refreshToken) {
     logout();
     throw new Error("Refresh token not found");
   }
-
   try {
     const response = await api.post("/token/refresh/", {
       refresh: refreshToken,
     });
-    console.log("new", response.data);
     Cookies.set("access_token", response.data.access, {
       path: "/",
       secure: false,
@@ -40,7 +37,6 @@ const refreshAccessToken = async () => {
         domain: window.location.hostname,
       });
     }
-
     return response.data.access;
   } catch (error) {
     console.error("Ошибка обновления:", error.response?.data || error.message);
@@ -49,7 +45,7 @@ const refreshAccessToken = async () => {
   }
 };
 
-// Интерцептор для автоматического обновления токена
+//Автоматическое обновление токена
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get("access_token");
@@ -65,20 +61,17 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url !== "/token/"
     ) {
       originalRequest._retry = true;
-      console.log("i here", originalRequest.url);
       try {
         const newToken = await refreshAccessToken();
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        console.error("Ошибка обновления токена:", refreshError);
         logout();
         return Promise.reject(refreshError);
       }
