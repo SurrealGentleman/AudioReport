@@ -7,7 +7,7 @@ from .serializers import DepartmentSerializer
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ['get', 'post', 'delete', 'patch']
 
     def create(self, request, *args, **kwargs):
         # Создаём

@@ -11,7 +11,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = EmployeeFilter
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ['get', 'post', 'delete', 'patch']
 
     def create(self, request, *args, **kwargs):
         # Создаём нового сотрудника
