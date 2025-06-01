@@ -1,0 +1,81 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+} */
+
+.App {
+  background-color: "#E4E5FF";
+}
+
+.main {
+  width: calc(100vw - 224px);
+  float: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-image: url("assets/arrow_down.svg"); /* Проверьте путь */
+  background-size: cover;
+}
+
+input::placeholder {
+  color: black;
+}
+
+input:focus::placeholder {
+  opacity: 0;
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.my-loader {
+  animation: flippx 2s infinite linear;
+}
+.my-spin {
+  animation: spin 1s infinite linear, dot-fade 2s infinite linear;
+}
+
+@keyframes flippx {
+  0%,
+  49.9999% {
+    transform: scaleX(1);
+  }
+  50%,
+  100% {
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
