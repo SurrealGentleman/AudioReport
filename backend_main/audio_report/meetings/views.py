@@ -5,6 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from .models import Meeting, MeetingEmployee
 from .render_docx import render_docx_template
+from .send_email import send_report_to_emails
 from .serializers import ReportSerializer, ReportInputSerializer
 from rest_framework.response import Response
 from audio_report.settings import BASE_DIR, MEDIA_ROOT
@@ -43,27 +44,38 @@ class SaveReportView(APIView):
         meeting.meeting_date = data["meeting_date"]
 
         tasks_context = []
-        for task in data["tasks"]:
-            employee = get_object_or_404(Employee, id=task["employee_id"])
-            tasks_context.append({
-                "content": task["content"],
-                "employee": f"{employee.last_name} {employee.first_name}",
-                "deadline": task["deadline"]
-            })
+        list_checked_employee_id = []
+        number_emp = 0
+        for task_i in data["tasks"]:
+            if task_i["employee_id"] not in list_checked_employee_id:
+                number_emp+=1
+                list_checked_employee_id.append(task_i["employee_id"])
+                employee = get_object_or_404(Employee, id=task_i["employee_id"])
+                text_task = (f'{number_emp}. '
+                             f'{employee.last_name} '
+                             f'{employee.first_name} '
+                             f'{employee.patronymic if employee.patronymic else ""}\n')
+
+                for task_j in data["tasks"]:
+                    if int(task_j["employee_id"]) == employee.id:
+                        text_task += f'    – {task_j["content"]} / {task_j["deadline"]}\n'
+                tasks_context.append(text_task)
 
         context = {
             "topic": data["topic"],
+            "meeting_date": data["meeting_date"].strftime("%d.%m.%Y"),
             "summary": data["summary"],
-            "key_questions": "\n".join(f"- {q}" for q in data["key_questions"]),
+            "key_questions": "\n".join(f"– {_}" for _ in data["key_questions"]),
             "participants": ", ".join(
-                f"{p['last_name']} {p['first_name']} {p.get('patronymic') or ''}".strip()
-                for p in data["participants"]
+                f"{_['last_name']} {_['first_name']} {_.get('patronymic') or ''}".strip()
+                for _ in data["participants"]
             ),
+            "tasks": "\n".join(f"{_}" for _ in tasks_context),
             "responsible": next(
-                (f"{p['last_name']} {p['first_name']}" for p in data["participants"] if p["is_responsible"]),
+                (f"{_['last_name']} {_['first_name']}" for _ in data["participants"]
+                 if _["is_responsible"]),
                 "Не указан"),
             "now_date": datetime.datetime.now().strftime("%d.%m.%Y"),
-            "tasks": tasks_context
         }
 
         template_path = os.path.join(BASE_DIR, "media/templates/meeting_template.docx")
@@ -80,10 +92,12 @@ class SaveReportView(APIView):
         meeting.report_path.name = f"reports/{filename}"
         meeting.save()
 
+        list_email_participants = []
         # Связь с участниками
         MeetingEmployee.objects.filter(meeting=meeting).delete()
         for p in data["participants"]:
             employee = get_object_or_404(Employee, id=p["id"])
+            list_email_participants.append(employee.email)
             MeetingEmployee.objects.create(
                 meeting=meeting,
                 employee=employee,
@@ -101,5 +115,13 @@ class SaveReportView(APIView):
                     due_date=datetime.datetime.strptime(task_data["deadline"], "%d.%m.%Y").date(),
                     employee=employee
                 )
+
+        # отправляем сообщение
+        send_report_to_emails(
+            subject="Отчет по совещанию",
+            body="Здравствуйте! Во вложении — отчет по итогам совещания.",
+            recipient_list=list_email_participants,
+            file_path=f"media/reports/{filename}"
+        )
 
         return Response({"report_path": meeting.report_path.name}, status=200)

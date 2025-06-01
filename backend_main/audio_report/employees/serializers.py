@@ -53,7 +53,7 @@ class EmployeeShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['id', 'full_name', 'first_name', 'last_name', 'patronymic', 'department', 'post', 'email']
+        fields = ['id', 'full_name', 'first_name', 'last_name', 'patronymic', 'department', 'post', 'email', 'is_admin']
 
     def get_full_name(self, obj):
         return f"{obj.last_name} {obj.first_name} {obj.patronymic or ''}".strip()
