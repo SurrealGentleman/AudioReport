@@ -22,6 +22,8 @@ const Dropdown = ({
   searchFunction,
   multiple,
   initChecked,
+  classNameArrow,
+  classNameCross,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [, setSelectedOption] = useState(null);
@@ -166,11 +168,10 @@ const Dropdown = ({
         </div>
         {searchTerm !== "" && clearable && !readonly && (
           <button
-            className="text-sm"
+            className={`text-sm ${classNameCross} -right-[26px] `}
             style={{
               position: "absolute",
               display: "inline-block",
-              right: "-26px",
               top: "6px",
             }}
             onClick={() => {
@@ -186,7 +187,7 @@ const Dropdown = ({
           <img
             className={`absolute -right-12 top-2 ${
               dropOpen && "transform rotate-180"
-            }`}
+            } ${classNameArrow}`}
             src={arrowDown}
             onClick={() => setDropOpen(!dropOpen)}
           />

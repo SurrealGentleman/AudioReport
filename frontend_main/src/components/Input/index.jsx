@@ -8,6 +8,7 @@ const Input = ({
   inputStyle,
   titleStyle,
   validationError,
+  multiple = "false",
 }) => {
   return (
     <div>
