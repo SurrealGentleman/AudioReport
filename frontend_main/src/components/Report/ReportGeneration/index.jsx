@@ -10,12 +10,14 @@ import { generateReport } from "../../../services/meetingService";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { example } from "../../../constants/example";
 import TaskEmployee from "../TaskEmployee";
+import { useNavigate } from "react-router-dom";
 
 const area = "report";
 const ReportGenegation = () => {
   const isAuthenticated = useSelector((state) => state.global.isAuthenticated);
   const user = useSelector((state) => state.global.user);
   const { promiseInProgress } = usePromiseTracker({ area });
+  const navigate = useNavigate();
 
   const [posts, setPosts] = useState();
   const [departments, setDepartments] = useState();
@@ -32,7 +34,7 @@ const ReportGenegation = () => {
   const [dateMeeting, setDateMeeting] = useState();
   const [record, setRecord] = useState();
 
-  const [report, setReport] = useState(example);
+  const [report, setReport] = useState({});
   const [keyQuestions, setKeyQuestions] = useState();
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const ReportGenegation = () => {
 
       try {
         const data = await trackPromise(generateReport(formData), area);
-        setReport(data);
+        setReport(example);
       } catch (error) {
         console.error("Ошибка генерации отчета: ", error);
       }
@@ -266,6 +268,9 @@ const ReportGenegation = () => {
                 rows={1}
                 value={report.topic}
                 id="autoResizeTopic"
+                onChange={(e) =>
+                  setReport({ ...report, topic: e.target.value })
+                }
               />
             </div>
             <div>
@@ -291,6 +296,7 @@ const ReportGenegation = () => {
                 rows={report.key_questions.length}
                 cols={82}
                 value={keyQuestions}
+                onChange={(e) => setKeyQuestions(e.target.value)}
               />
             </div>
             <div>
@@ -304,6 +310,9 @@ const ReportGenegation = () => {
                 rows={1}
                 value={report.summary}
                 id="autoResize"
+                onChange={(e) =>
+                  setReport({ ...report, summary: e.target.value })
+                }
               />
             </div>
             <table className="my-7 w-full text-sm">
@@ -325,7 +334,7 @@ const ReportGenegation = () => {
               <Button
                 text="Сохранить отчет"
                 buttonStyle="text-sm"
-                onClick={handleCreateReport}
+                onClick={() => navigate("/meetings")}
               />
             </div>
           </div>
