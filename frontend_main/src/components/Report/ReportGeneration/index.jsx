@@ -112,12 +112,10 @@ const ReportGenegation = () => {
       const formData = new FormData();
       formData.append("audio", record);
       formData.append("data", JSON.stringify(dataJson));
-      console.log(formData);
 
       try {
         const data = await trackPromise(generateReport(formData), area);
         setReport(data);
-        console.log(data);
       } catch (error) {
         console.error("Ошибка генерации отчета: ", error);
       }

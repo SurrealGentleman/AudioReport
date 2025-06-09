@@ -10,6 +10,7 @@ const PostModule = () => {
   const [namePost, setNamePost] = useState();
   const [allPosts, setAllPosts] = useState();
   const [updatePosts, setUpdatePosts] = useState(0);
+  const [changePost, setChangePost] = useState();
 
   useEffect(() => {
     (async () => {
@@ -21,6 +22,12 @@ const PostModule = () => {
       }
     })();
   }, [updatePosts]);
+
+  useEffect(() => {
+    if (changePost) {
+      setNamePost(changePost.name);
+    }
+  }, [changePost]);
 
   const handleAddPost = async (e) => {
     e.preventDefault();
@@ -39,11 +46,12 @@ const PostModule = () => {
           <Input
             type="text"
             title="Наименование"
+            value={namePost}
             onChange={(e) => setNamePost(e.target.value)}
           />
         </div>
         <Button
-          text="Добавить должность"
+          text={changePost ? "Сохранить изменения" : "Добавить должность"}
           buttonStyle="text-sm"
           onClick={handleAddPost}
         />
@@ -53,6 +61,7 @@ const PostModule = () => {
         items={allPosts}
         updatePosts={updatePosts}
         setUpdatePosts={setUpdatePosts}
+        setChangePost={setChangePost}
       />
     </div>
   );

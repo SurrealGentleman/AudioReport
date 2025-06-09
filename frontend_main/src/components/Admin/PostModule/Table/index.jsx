@@ -2,7 +2,13 @@ import React from "react";
 import { trash } from "../../../../assets";
 import { deletePost } from "../../../../services/postService";
 
-const Table = ({ headers, items, updatePosts, setUpdatePosts }) => {
+const Table = ({
+  headers,
+  items,
+  updatePosts,
+  setUpdatePosts,
+  setChangePost,
+}) => {
   const handleDelete = async (postId) => {
     try {
       await deletePost(postId);
@@ -24,7 +30,10 @@ const Table = ({ headers, items, updatePosts, setUpdatePosts }) => {
       <div>
         {items?.map((item) => {
           return (
-            <div className="flex justify-between">
+            <div
+              className="flex justify-between hover:bg-brand-grey cursor-pointer"
+              onClick={() => setChangePost(item)}
+            >
               <div className="py-4 px-3 border-r border-b w-full">
                 {item.name}
               </div>

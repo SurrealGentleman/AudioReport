@@ -36,7 +36,10 @@ const Table = ({ headers, items, updateEmployees, setUpdateEmployees }) => {
           delete item.patronymic;
           delete item.password;
           return (
-            <div className="flex justify-between" key={item.email}>
+            <div
+              className="flex justify-between hover:bg-brand-grey cursor-pointer"
+              key={item.email}
+            >
               <div className="border-b w-full flex justify-between">
                 {Object.entries(item).map(([key, value]) => (
                   <>

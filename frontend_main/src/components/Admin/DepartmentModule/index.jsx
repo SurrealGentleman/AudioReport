@@ -12,6 +12,7 @@ const DepartmentModule = () => {
   const [nameDepartment, setNameDepartment] = useState();
   const [allDepartments, setAllDepartments] = useState();
   const [updateDepartments, setUpdateDepartments] = useState(0);
+  const [changeDepartment, setChangeDepartment] = useState();
 
   useEffect(() => {
     (async () => {
@@ -23,6 +24,12 @@ const DepartmentModule = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (changeDepartment) {
+      setNameDepartment(changeDepartment.name);
+    }
+  }, [changeDepartment]);
 
   const handleAddDepartment = async (e) => {
     e.preventDefault();
@@ -47,7 +54,7 @@ const DepartmentModule = () => {
           />
         </div>
         <Button
-          text="Добавить отдел"
+          text={changeDepartment ? "Сохранить изменения" : "Добавить отдел"}
           buttonStyle="text-sm"
           onClick={handleAddDepartment}
         />
@@ -57,6 +64,7 @@ const DepartmentModule = () => {
         items={allDepartments}
         updateDepartments={updateDepartments}
         setUpdateDepartments={setUpdateDepartments}
+        setChangeDepartment={setChangeDepartment}
       />
     </div>
   );

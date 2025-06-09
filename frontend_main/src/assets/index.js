@@ -7,6 +7,7 @@ import trash from "./delete.svg";
 import admin from "./key.svg";
 import check from "./check.svg";
 import square from "./square.svg";
+import miniLogo from "./mini_logo.svg";
 
 export {
   logoWhite,
@@ -18,4 +19,5 @@ export {
   admin,
   check,
   square,
+  miniLogo,
 };
