@@ -1,0 +1,12 @@
+.env
+.git
+.gitignore
+.pytest_cache
+.pytest-tmp
+.venv
+__pycache__
+*.py[cod]
+htmlcov
+old
+pytest-cache-files-*
+tests
