@@ -1,78 +1,69 @@
 import axios from "axios";
-import Cookies from "js-cookie";
-import { logout } from "./authService";
 
-const API_URL = "http://127.0.0.1:8000/api";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  saveTokens,
+} from "./tokenService";
 
-// Настройка axios
 const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Функция обновления access-токена
-const refreshAccessToken = async () => {
-  const refreshToken = Cookies.get("refresh_token");
+async function refreshAccessToken() {
+  const refreshToken = getRefreshToken();
+
   if (!refreshToken) {
-    logout();
+    clearTokens();
     throw new Error("Refresh token not found");
   }
-  try {
-    const response = await api.post("/token/refresh/", {
-      refresh: refreshToken,
-    });
-    Cookies.set("access_token", response.data.access, {
-      path: "/",
-      secure: false,
-      httpOnly: false,
-      sameSite: "Lax",
-    });
 
-    // Обновляем refresh-токен, если он пришёл в ответе
-    if (response.data.refresh) {
-      Cookies.set("refresh_token", response.data.refresh, {
-        path: "/",
-        secure: false,
-        sameSite: "Lax",
-        domain: window.location.hostname,
-      });
-    }
-    return response.data.access;
-  } catch (error) {
-    console.error("Ошибка обновления:", error.response?.data || error.message);
-    logout();
-    throw error;
+  const response = await api.post("/auth/token/refresh/", {
+    refresh: refreshToken,
+  });
+
+  saveTokens(response.data.access, response.data.refresh);
+
+  return response.data.access;
+}
+
+api.interceptors.request.use((config) => {
+  const accessToken = getAccessToken();
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
-};
 
-//Автоматическое обновление токена
-api.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  return config;
+});
 
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
+    const requestUrl = originalRequest?.url;
+
+    const isAuthenticationRequest =
+      requestUrl === "/auth/token/" ||
+      requestUrl === "/auth/token/refresh/";
+
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry &&
-      originalRequest.url !== "/token/"
+      !originalRequest?._retry &&
+      !isAuthenticationRequest
     ) {
       originalRequest._retry = true;
+
       try {
-        const newToken = await refreshAccessToken();
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        const newAccessToken = await refreshAccessToken();
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
         return api(originalRequest);
       } catch (refreshError) {
-        logout();
+        clearTokens();
         return Promise.reject(refreshError);
       }
     }
