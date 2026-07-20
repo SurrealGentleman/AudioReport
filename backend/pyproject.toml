@@ -1,0 +1,56 @@
+[project]
+name = "backend"
+version = "0.2.0"
+description = ""
+authors = [
+    {name = "Shumay",email = "alexeev1one@mail.ru"}
+]
+requires-python = ">=3.12,<4"
+dependencies = [
+    "django (>=6.0.7,<7.0.0)",
+    "django-environ (>=0.14.0,<0.15.0)",
+    "djangorestframework (>=3.17.1,<4.0.0)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
+    "django-cors-headers (>=4.9.0,<5.0.0)",
+    "django-axes (>=8.3.1,<9.0.0)",
+    "psycopg2-binary (>=2.9.12,<3.0.0)",
+    "django-filter (>=26.1,<27.0)",
+    "docxtpl (>=0.20.2,<0.21.0)",
+    "requests (>=2.34.2,<3.0.0)",
+    "gunicorn (>=26.0.0,<27.0.0)",
+    "drf-spectacular[sidecar] (>=0.30.0,<0.31.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["**/migrations/*.py"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM", "DJ", "S", "T20"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests.py" = ["S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "ai",
+    "authentication",
+    "audio_report",
+    "departments",
+    "employees",
+    "meetings",
+    "positions",
+    "tasks",
+]
+
+[dependency-groups]
+dev = [
+    "ruff (>=0.15.22,<0.16.0)"
+]
