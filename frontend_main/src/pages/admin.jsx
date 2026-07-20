@@ -1,39 +1,94 @@
-import React, { useState } from "react";
-import { adminMenu } from "../constants/adminMenu";
-import PostModule from "../components/Admin/PostModule";
-import DepartmentModule from "../components/Admin/DepartmentModule";
-import EmployeeModule from "../components/Admin/EmployeeModule";
+import { useState } from "react";
 
-const AdminPage = () => {
-  const [currentBlock, setCurrentBlock] = useState("employee");
+import { useAuth } from "../auth/useAuth";
+import DirectoryManager from "../components/admin/DirectoryManager";
+import EmployeeManager from "../components/admin/EmployeeManager";
+import {
+  createDepartment,
+  createPosition,
+  deleteDepartment,
+  deletePosition,
+  getDepartments,
+  getPositions,
+} from "../services/directoryService";
+
+function AdminPage() {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("employees");
+
+  if (!user?.is_staff) {
+    return (
+      <div className="uk-alert-danger uk-padding">
+        У вас нет доступа к администрированию.
+      </div>
+    );
+  }
 
   return (
-    <div className="w-2/3">
-      <p className="text-3xl">Управление данными</p>
-      <div className="flex gap-5 mt-5">
-        {adminMenu.map((block) => {
-          return (
-            <div
-              key={block.id}
-              className={`${
-                currentBlock === block.id
-                  ? "bg-brand-blue text-white"
-                  : "bg-brand-purple text-black"
-              }  py-1.5 px-7 rounded-lg cursor-pointer`}
-              onClick={() => setCurrentBlock(block.id)}
-            >
-              {block.title}
-            </div>
-          );
-        })}
+    <section>
+      <h1>Администрирование</h1>
+
+      <div className="uk-margin">
+        <button
+          className={
+            activeTab === "employees"
+              ? "uk-button uk-button-primary"
+              : "uk-button uk-button-default"
+          }
+          type="button"
+          onClick={() => setActiveTab("employees")}
+        >
+          Сотрудники
+        </button>
+
+        <button
+          className={
+            activeTab === "departments"
+              ? "uk-button uk-button-primary"
+              : "uk-button uk-button-default"
+          }
+          type="button"
+          onClick={() => setActiveTab("departments")}
+        >
+          Отделы
+        </button>
+
+        <button
+          className={
+            activeTab === "positions"
+              ? "uk-button uk-button-primary"
+              : "uk-button uk-button-default"
+          }
+          type="button"
+          onClick={() => setActiveTab("positions")}
+        >
+          Должности
+        </button>
       </div>
-      <div className="mt-5">
-        {currentBlock === "post" && <PostModule />}
-        {currentBlock === "department" && <DepartmentModule />}
-        {currentBlock === "employee" && <EmployeeModule />}
-      </div>
-    </div>
+
+      {activeTab === "employees" && <EmployeeManager />}
+
+      {activeTab === "departments" && (
+        <DirectoryManager
+          title="Отделы"
+          itemName="Отдел"
+          loadItems={getDepartments}
+          createItem={createDepartment}
+          deleteItem={deleteDepartment}
+        />
+      )}
+
+      {activeTab === "positions" && (
+        <DirectoryManager
+          title="Должности"
+          itemName="Должность"
+          loadItems={getPositions}
+          createItem={createPosition}
+          deleteItem={deletePosition}
+        />
+      )}
+    </section>
   );
-};
+}
 
 export default AdminPage;
