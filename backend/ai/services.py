@@ -43,7 +43,7 @@ def generate_meeting_report(
     response_payload = client.generate_report(
         audio_file=audio_file,
         participants=participant_names,
-        meeting_date=meeting_data["meeting_date"].strftime("%d.%m.%Y"),
+        meeting_date=meeting_data["meeting_date"].isoformat(),
     )
 
     response_serializer = NeuroServerResponseSerializer(data=response_payload)

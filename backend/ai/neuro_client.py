@@ -38,7 +38,7 @@ class NeuroServerClient:
         files = {
             "audio": (
                 audio_file.name,
-                audio_file.file,
+                audio_file,
                 audio_file.content_type or "application/octet-stream",
             )
         }
