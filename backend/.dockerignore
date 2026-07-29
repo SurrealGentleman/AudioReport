@@ -1,0 +1,17 @@
+.git/
+.gitignore
+.idea/
+.vscode/
+.venv/
+.test-media/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+media/audio/
+media/reports/
+staticfiles/
+docker-compose.yml
