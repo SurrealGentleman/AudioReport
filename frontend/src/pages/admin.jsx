@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import { useAuth } from "../auth/useAuth";
-import DirectoryManager from "../components/admin/DirectoryManager";
-import EmployeeManager from "../components/admin/EmployeeManager";
+import DirectoryManager from "../components/Admin/DirectoryManager";
+import EmployeeManager from "../components/Admin/EmployeeManager";
 import {
   createDepartment,
   createPosition,
