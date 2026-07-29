@@ -9,7 +9,7 @@ WORKDIR /service
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir poetry==2.1.3
+    && pip install --no-cache-dir poetry==2.4.1
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --only main --no-root
