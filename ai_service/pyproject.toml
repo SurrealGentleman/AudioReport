@@ -1,0 +1,39 @@
+[project]
+name = "ai-service"
+version = "0.2.0"
+description = ""
+authors = [
+    {name = "Shumay",email = "alexeev1one@mail.ru"}
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.139.0,<0.140.0)",
+    "pydantic-settings (>=2.14.2,<3.0.0)",
+    "faster-whisper (>=1.2.1,<2.0.0)",
+    "python-multipart (>=0.0.20,<0.1.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "uvicorn[standard] (>=0.35.0,<1.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4.0,<9.0.0)",
+    "pytest-cov (>=6.2.0,<7.0.0)",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-markers -p no:cacheprovider --basetemp=.pytest-tmp"
+markers = [
+    "integration: requires real external services",
+    "slow: runs local AI models and may take several minutes",
+]

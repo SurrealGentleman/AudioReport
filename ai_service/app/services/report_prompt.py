@@ -1,4 +1,8 @@
-def report_prompt(transcript: str, participants: str, meeting_date: str) -> str:
+def build_report_prompt(
+    transcript: str,
+    participants: str,
+    meeting_date: str,
+) -> str:
     return (f'''Ты — ассистент, который помогает составлять структурированные отчёты по итогам рабочих совещаний.
 На основе следующих входных данных:
 Дата совещания: {meeting_date}
